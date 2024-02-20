@@ -7,6 +7,8 @@
 *.dll
 *.so
 *.dylib
+.vscode
+docker/data
 
 # Test binary, built with `go test -c`
 *.test
