@@ -6,8 +6,10 @@ import (
 
 type User struct {
 	BaseModel
-	Name       string
+	Nickname   string `gorm:"type:varchar(20);"`
 	Desciption string
 	RoleID     uint
 	ServiceID  uint
+	OpenID     string `gorm:"type:varchar(50);"`
+	Phone      string `gorm:"type:varchar(50);"`
 }

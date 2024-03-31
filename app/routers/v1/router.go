@@ -18,4 +18,5 @@ func Router(routerGroup *gin.RouterGroup) {
 	getBookingByUserId(v1Group) // 获取预定时间
 	createBooking(v1Group)      // 创建预定时间
 	createService(v1Group)      // 创建服务
+	loginWechat(v1Group)        // 微信登录
 }

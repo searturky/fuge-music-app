@@ -1,6 +1,8 @@
 package router_v1
 
 import (
+	models "fuge/app/models/v1"
+	services "fuge/app/service/v1"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,5 +40,25 @@ func loginIn(routerGroup *gin.RouterGroup) {
 func sayHello(routerGroup *gin.RouterGroup) {
 	routerGroup.GET("/sayHello", func(c *gin.Context) {
 		c.String(200, "hello")
+	})
+}
+
+// @Summary 登陆微信
+// @Description 登陆微信
+// @Tags v1
+// @Accept json
+// @Produce json
+// @Success 200 {string} Helloworld
+// @Router /login-wechat [post]
+// @Param param body models.LoginWeChatIn true "登陆参数"
+func loginWechat(routerGroup *gin.RouterGroup) {
+	routerGroup.POST("/login-wechat", func(c *gin.Context) {
+		lwi := &models.LoginWeChatIn{}
+		if err := c.ShouldBindJSON(lwi); err != nil {
+			c.JSON(200, gin.H{"error": err.Error()})
+			return
+		}
+		services.WechatService.LoginWechat(lwi)
+		c.JSON(200, gin.H{"message": "success"})
 	})
 }

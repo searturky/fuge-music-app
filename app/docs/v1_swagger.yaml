@@ -34,6 +34,14 @@ definitions:
     - name
     - timePeriod
     type: object
+  models_v1.LoginWeChatIn:
+    properties:
+      code:
+        format: string
+        type: string
+    required:
+    - code
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -99,6 +107,28 @@ paths:
       summary: ping example
       tags:
       - example
+  /login-wechat:
+    post:
+      consumes:
+      - application/json
+      description: 登陆微信
+      parameters:
+      - description: 登陆参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/models_v1.LoginWeChatIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 登陆微信
+      tags:
+      - v1
   /serivce:
     post:
       consumes:

@@ -104,6 +104,40 @@ const docTemplatev1 = `{
                 }
             }
         },
+        "/login-wechat": {
+            "post": {
+                "description": "登陆微信",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "summary": "登陆微信",
+                "parameters": [
+                    {
+                        "description": "登陆参数",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models_v1.LoginWeChatIn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/serivce": {
             "post": {
                 "description": "创建服务",
@@ -183,6 +217,18 @@ const docTemplatev1 = `{
                     "format": "integer",
                     "minimum": 1,
                     "example": 60
+                }
+            }
+        },
+        "models_v1.LoginWeChatIn": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "format": "string"
                 }
             }
         }
