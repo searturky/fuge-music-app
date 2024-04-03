@@ -10,13 +10,16 @@ type userDAO struct {
 
 var UserDAO *userDAO = &userDAO{}
 
-func (s *userDAO) DoGetUserByOpenID(openID string) *models.User {
+func (s *userDAO) DoGetUserByOpenID(openID string) (*models.User, error) {
 	user := &models.User{
 		OpenID: openID,
 	}
-	if err := core.DB.Where("open_id = ?", user.OpenID).First(user).Error; err != nil {
-		core.DB.Create(user)
-	}
+	err := core.DB.Where("open_id = ?", user.OpenID).First(user).Error
 
+	return user, err
+}
+
+func (s *userDAO) DoCreateUser(user *models.User) *models.User {
+	core.DB.Create(user)
 	return user
 }

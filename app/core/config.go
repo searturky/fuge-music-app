@@ -7,12 +7,13 @@ import (
 
 // Config is the struct for the configuration
 type ConfYaml struct {
-	AppEnv    string `mapstructure:"app_env"`
-	Host      string `mapstructure:"host"`
-	Port      string `mapstructure:"port"`
-	DBDSN     string `mapstructure:"db_dsn"`
-	AppID     string `mapstructure:"app_id"`
-	AppSecret string `mapstructure:"app_secret"`
+	AppEnv            string `mapstructure:"app_env"`
+	Host              string `mapstructure:"host"`
+	Port              string `mapstructure:"port"`
+	DBDSN             string `mapstructure:"db_dsn"`
+	AppID             string `mapstructure:"app_id"`
+	AppSecret         string `mapstructure:"app_secret"`
+	DefaultUserPrefix string `mapstructure:"default_user_prefix"`
 }
 
 var conf *ConfYaml
@@ -39,14 +40,7 @@ func (c *ConfYaml) GetAddr() string {
 }
 
 func InitConf() *ConfYaml {
-	// conf := &ConfYaml{}
-	// v := viper.New()
-	// v.SetConfigName("settings")
-	// v.SetConfigType("yaml")
-	// v.AutomaticEnv()
-	// v.AddConfigPath("../config/")
-	// v.AddConfigPath(".")
-	// v.ReadInConfig()
+
 	viper.SetConfigName("settings")
 	viper.SetConfigType("yaml")
 	viper.AutomaticEnv()
