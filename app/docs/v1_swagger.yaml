@@ -151,4 +151,26 @@ paths:
       summary: 创建服务
       tags:
       - v1
+  /store/{storeId}/room:
+    get:
+      consumes:
+      - application/json
+      description: 通过ID获取门店的房间列表
+      parameters:
+      - description: 门店ID
+        in: path
+        name: storeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 获取门店的房间列表
+      tags:
+      - v1
+      - 门店相关
 swagger: "2.0"

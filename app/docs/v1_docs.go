@@ -171,6 +171,39 @@ const docTemplatev1 = `{
                     }
                 }
             }
+        },
+        "/store/{storeId}/room": {
+            "get": {
+                "description": "通过ID获取门店的房间列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1",
+                    "门店相关"
+                ],
+                "summary": "获取门店的房间列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "门店ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

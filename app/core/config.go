@@ -14,6 +14,9 @@ type ConfYaml struct {
 	AppID             string `mapstructure:"app_id"`
 	AppSecret         string `mapstructure:"app_secret"`
 	DefaultUserPrefix string `mapstructure:"default_user_prefix"`
+	RedisAddr         string `mapstructure:"redis_addr"`
+	RedisPassword     string `mapstructure:"redis_password"`
+	RedisDB           int    `mapstructure:"redis_db"`
 }
 
 var conf *ConfYaml

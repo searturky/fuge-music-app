@@ -17,6 +17,7 @@ var conf *core.ConfYaml
 func init() {
 	conf = core.InitConf()
 	core.InitDB(conf)
+	core.InitRedis(conf)
 }
 
 func main() {
@@ -38,5 +39,6 @@ func main() {
 	}
 	defer core.CloseDB()
 	defer s.Close()
+	defer core.CloseRedis()
 	s.ListenAndServe()
 }

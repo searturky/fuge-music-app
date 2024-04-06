@@ -6,7 +6,7 @@ import (
 )
 
 type LoginWeChatIn struct {
-	Code string `json:"code" binding:"required" type:"string" format:"string" description:"wechat code"`
+	Code string `json:"code" binding:"required" type:"string" format:"string" description:"wechat code" nullable:"false"`
 }
 
 type LoginWeChatRes struct {

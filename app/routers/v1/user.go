@@ -3,6 +3,8 @@ package router_v1
 import (
 	models "fuge/app/models/v1"
 	services "fuge/app/service/v1"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -55,10 +57,13 @@ func loginWechat(routerGroup *gin.RouterGroup) {
 	routerGroup.POST("/login-wechat", func(c *gin.Context) {
 		lwi := &models.LoginWeChatIn{}
 		if err := c.ShouldBindJSON(lwi); err != nil {
-			c.JSON(200, gin.H{"error": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		services.WechatService.LoginWechat(lwi)
-		c.JSON(200, gin.H{"message": "success"})
+		ret, err := services.WechatService.LoginWechat(lwi)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		c.JSON(200, ret)
 	})
 }

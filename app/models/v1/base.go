@@ -38,7 +38,7 @@ func (mt *Date) Time() time.Time {
 }
 
 type BaseModel struct {
-	ID        uint      `gorm:"primarykey"`
+	ID        int       `gorm:"primarykey"`
 	CreatedAt time.Time `gorm:"autoCreateTime; default:now()"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime; default:now()"`
 	DeletedAt time.Time `gorm:"default: null"`
