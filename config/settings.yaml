@@ -1,0 +1,10 @@
+app_env: dev
+host: 0.0.0.0
+port: 8080
+db_dsn: "host=localhost user=fuge password=fuge123 dbname=fuge port=5434 sslmode=disable TimeZone=Asia/Shanghai"
+app_id: "wx67a8ebed136d0f12"
+app_secret: "c6d9bf0ea309fca69ec33e94cfc589b5"
+default_user_prefix: 格调
+redis_addr: "localhost:6381"
+redis_password: ""
+redis_db: 0

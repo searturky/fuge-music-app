@@ -1,0 +1,25 @@
+version: "0.1.0"
+
+services:
+  pgsql:
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    environment:
+      TZ: "Asia/Shanghai"
+      POSTGRES_USER: fuge
+      POSTGRES_PASSWORD: fuge123
+      POSTGRES_DB: fuge
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - 6381:6379
+    environment:
+      TZ: "Asia/Shanghai"
