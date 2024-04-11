@@ -13,11 +13,8 @@ import (
 // @BasePath /api/v1
 func Router(routerGroup *gin.RouterGroup) {
 	v1Group := routerGroup.Group("/v1")
-	loginIn(v1Group)                // 登录
-	sayHello(v1Group)               // sayHello
-	getAppointmentByUserId(v1Group) // 获取预定时间
-	createAppointment(v1Group)      // 创建预定时间
-	createService(v1Group)          // 创建服务
-	loginWechat(v1Group)            // 微信登录
-	getRoomByStoreId(v1Group)       // 获取房间
+	WorkRouter(v1Group)        // 工作
+	UserRouter(v1Group)        // 用户
+	RoomRouter(v1Group)        // 房间
+	AppointmentRouter(v1Group) // 预约
 }

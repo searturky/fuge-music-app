@@ -15,7 +15,7 @@ const docTemplatev1 = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/booking": {
+        "/appointment": {
             "post": {
                 "description": "创建预定时间",
                 "consumes": [
@@ -49,7 +49,7 @@ const docTemplatev1 = `{
                 }
             }
         },
-        "/booking/{id}": {
+        "/appointment/{id}": {
             "get": {
                 "description": "通过用户ID获取预定时间",
                 "consumes": [
@@ -81,9 +81,9 @@ const docTemplatev1 = `{
                 }
             }
         },
-        "/example/helloworld": {
+        "/room/store/{storeId}": {
             "get": {
-                "description": "do ping",
+                "description": "通过ID获取门店的房间列表",
                 "consumes": [
                     "application/json"
                 ],
@@ -91,9 +91,19 @@ const docTemplatev1 = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "v1",
+                    "门店相关"
                 ],
-                "summary": "ping example",
+                "summary": "获取门店的房间列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "门店ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -104,7 +114,7 @@ const docTemplatev1 = `{
                 }
             }
         },
-        "/login-wechat": {
+        "/user/login-wechat": {
             "post": {
                 "description": "登陆微信",
                 "consumes": [
@@ -138,9 +148,9 @@ const docTemplatev1 = `{
                 }
             }
         },
-        "/serivce": {
+        "/work": {
             "post": {
-                "description": "创建服务",
+                "description": "新建工作",
                 "consumes": [
                     "application/json"
                 ],
@@ -150,49 +160,16 @@ const docTemplatev1 = `{
                 "tags": [
                     "v1"
                 ],
-                "summary": "创建服务",
+                "summary": "新建工作",
                 "parameters": [
                     {
-                        "description": "创建服务参数",
+                        "description": "创建工作内容参数",
                         "name": "param",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models_v1.CreateServiceIn"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/store/{storeId}/room": {
-            "get": {
-                "description": "通过ID获取门店的房间列表",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "v1",
-                    "门店相关"
-                ],
-                "summary": "获取门店的房间列表",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "门店ID",
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {

@@ -49,7 +49,7 @@ info:
   title: fuge API
   version: "0.1"
 paths:
-  /booking:
+  /appointment:
     post:
       consumes:
       - application/json
@@ -71,7 +71,7 @@ paths:
       summary: 创建预定时间
       tags:
       - v1
-  /booking/{id}:
+  /appointment/{id}:
     get:
       consumes:
       - application/json
@@ -92,66 +92,7 @@ paths:
       summary: 获取预定时间
       tags:
       - v1
-  /example/helloworld:
-    get:
-      consumes:
-      - application/json
-      description: do ping
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: ping example
-      tags:
-      - example
-  /login-wechat:
-    post:
-      consumes:
-      - application/json
-      description: 登陆微信
-      parameters:
-      - description: 登陆参数
-        in: body
-        name: param
-        required: true
-        schema:
-          $ref: '#/definitions/models_v1.LoginWeChatIn'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: 登陆微信
-      tags:
-      - v1
-  /serivce:
-    post:
-      consumes:
-      - application/json
-      description: 创建服务
-      parameters:
-      - description: 创建服务参数
-        in: body
-        name: param
-        required: true
-        schema:
-          $ref: '#/definitions/models_v1.CreateServiceIn'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: 创建服务
-      tags:
-      - v1
-  /store/{storeId}/room:
+  /room/store/{storeId}:
     get:
       consumes:
       - application/json
@@ -173,4 +114,48 @@ paths:
       tags:
       - v1
       - 门店相关
+  /user/login-wechat:
+    post:
+      consumes:
+      - application/json
+      description: 登陆微信
+      parameters:
+      - description: 登陆参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/models_v1.LoginWeChatIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 登陆微信
+      tags:
+      - v1
+  /work:
+    post:
+      consumes:
+      - application/json
+      description: 新建工作
+      parameters:
+      - description: 创建工作内容参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/models_v1.CreateServiceIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 新建工作
+      tags:
+      - v1
 swagger: "2.0"
