@@ -103,6 +103,11 @@ paths:
         name: storeId
         required: true
         type: integer
+      - description: 用户校验
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

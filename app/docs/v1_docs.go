@@ -102,6 +102,13 @@ const docTemplatev1 = `{
                         "name": "storeId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户校验",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {

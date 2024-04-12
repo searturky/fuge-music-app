@@ -27,7 +27,7 @@ type User struct {
 	OpenID     string   `gorm:"type:varchar(50);default: null"`
 	Phone      string   `gorm:"type:varchar(50);default: null"`
 	AvatarUrl  string   `gorm:"type:varchar(255);default: null"`
-	Status     Status   `gorm:"type:varchar(20);default: uncomplete"`
+	Status     Status   `gorm:"type:varchar(20)"`
 	Province   string   `gorm:"type:varchar(50);default: null"`
 	City       string   `gorm:"type:varchar(50);default: null"`
 	Country    string   `gorm:"type:varchar(50);default: null"`

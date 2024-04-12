@@ -4,6 +4,7 @@ import (
 	"fuge/app/middleware"
 	"net/http"
 	"strconv"
+
 	// models "fuge/app/models/v1"
 	services "fuge/app/service/v1"
 
@@ -23,6 +24,7 @@ func RoomRouter(routerGroup *gin.RouterGroup) {
 // @Success 200 {string} Helloworld
 // @Router /room/store/{storeId} [get]
 // @Param storeId path int true "门店ID"
+// @Param Authorization header string true "用户token"
 func getRoomByStoreId(routerGroup *gin.RouterGroup) {
 	routerGroup.GET("/store/:storeId",
 		func(c *gin.Context) {

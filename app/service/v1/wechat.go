@@ -2,6 +2,7 @@ package service_v1
 
 import (
 	// "context"
+	"context"
 	"encoding/json"
 	"fuge/app/constant"
 	"fuge/app/core"
@@ -56,9 +57,9 @@ func ensureUser(res *models.LoginWeChatRes) *models.User {
 }
 
 func setLoginTokenToRedis(key, token string) {
-	// context := context.Background()
+	context := context.Background()
 	expire := time.Hour * 24 * 7
-	err := core.RedisClient.SetEx(nil, key, string(token), expire).Err()
+	err := core.RedisClient.SetEx(context, key, string(token), expire).Err()
 	if err != nil {
 		panic(err)
 	}
