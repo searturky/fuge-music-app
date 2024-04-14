@@ -30,3 +30,14 @@ func (s *userDAO) DoGetUserByUserID(userID int) (*models.User, error) {
 	err := core.DB.Where("id = ?", userID).First(&user).Error
 	return &user, err
 }
+
+func (s *userDAO) DoSavePhoneNumber(data *models.WechatPhoneRes, user *models.User) error {
+	tx := core.DB.Model(user).Updates(models.User{
+		Phone:  data.PhoneInfo.PhoneNumber,
+		Status: models.Complete,
+	})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}

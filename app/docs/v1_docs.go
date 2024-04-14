@@ -105,7 +105,7 @@ const docTemplatev1 = `{
                     },
                     {
                         "type": "string",
-                        "description": "用户校验",
+                        "description": "用户token",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -143,6 +143,45 @@ const docTemplatev1 = `{
                         "schema": {
                             "$ref": "#/definitions/models_v1.LoginWeChatIn"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/phone-number": {
+            "get": {
+                "description": "获取用户手机号",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "summary": "获取用户手机号",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "微信code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {

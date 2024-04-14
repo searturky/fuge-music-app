@@ -4,16 +4,39 @@ import (
 	"encoding/json"
 	"fuge/app/core"
 	models "fuge/app/models/v1"
-	"io"
 	"net/url"
 )
 
 type wechatDAO struct {
+	wechatLoginUrl string
+	wechatPhoneUrl string
 }
 
-var WechatDAO *wechatDAO = &wechatDAO{}
+var WechatDAO *wechatDAO = &wechatDAO{
+	wechatLoginUrl: "/sns/jscode2session?",
+	wechatPhoneUrl: "/wxa/business/getuserphonenumber?",
+}
 
-func (s *wechatDAO) DoLoginWechat(lwi *models.LoginWeChatIn) *models.LoginWeChatRes {
+func (s *wechatDAO) DoGetPhoneNumber(code string, authToken string) (*models.WechatPhoneRes, error) {
+	data := &url.Values{
+		"access_token": {authToken},
+	}
+	// data.Set("access_token", authToken)
+	reqBody := map[string]string{
+		"code": code,
+	}
+	bodyBytes, err := core.Client.Post(s.wechatPhoneUrl+data.Encode(), reqBody)
+	if err != nil {
+		return nil, err
+	}
+	body := &models.WechatPhoneRes{}
+	if err := json.Unmarshal(bodyBytes, body); err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
+func (s *wechatDAO) DoLoginWechat(lwi *models.LoginWeChatIn) *models.WeChatLoginRes {
 	data := &url.Values{}
 	conf := core.GetConf()
 	data.Set("appid", conf.AppID)
@@ -21,24 +44,18 @@ func (s *wechatDAO) DoLoginWechat(lwi *models.LoginWeChatIn) *models.LoginWeChat
 	data.Set("js_code", lwi.Code)
 	data.Set("grant_type", "authorization_code")
 
-	resp, err := core.Client.Get("https://api.weixin.qq.com/sns/jscode2session?" + data.Encode())
+	bodyBytes, err := core.Client.Get(s.wechatLoginUrl + data.Encode())
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-	bodyJson := &models.LoginWeChatRes{}
-	if err := json.Unmarshal(body, bodyJson); err != nil {
+	body := &models.WeChatLoginRes{}
+	if err := json.Unmarshal(bodyBytes, body); err != nil {
 		panic(err)
 	}
 	// o2obk58PnZ-c40mACNtgtG3KYco4
 	// SessionKey: MoUDMXCTjnOL3ZYTwSQzuA==
-	if bodyJson.ErrorCode != 0 {
-		panic(bodyJson.ErrMsg)
+	if body.ErrorCode != 0 {
+		panic(body.ErrMsg)
 	}
-	println(bodyJson)
-	return bodyJson
+	return body
 }

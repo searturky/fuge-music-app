@@ -13,24 +13,7 @@ import (
 
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-		redisKey := constant.UserToken + token
-		ctx := context.Background()
-		var err error
-		userInfoStr, err := core.RedisClient.Get(ctx, redisKey).Result()
-		if err != nil {
-			c.JSON(403, gin.H{})
-			c.Abort()
-			return
-		}
-		userInfo := &models.UserSchema{}
-		err = json.Unmarshal([]byte(userInfoStr), userInfo)
-		if err != nil {
-			c.JSON(403, gin.H{})
-			c.Abort()
-			return
-		}
-		user, err := daos.UserDAO.DoGetUserByUserID(userInfo.ID)
+		user, err := baseAuth(c)
 		if err != nil {
 			c.JSON(403, gin.H{})
 			c.Abort()
@@ -44,4 +27,44 @@ func AuthMiddleWare() gin.HandlerFunc {
 		c.Set("user", user)
 		c.Next()
 	}
+}
+
+func AuthUnCompleteMiddleWare() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, err := baseAuth(c)
+		if err != nil {
+			c.JSON(403, gin.H{})
+			c.Abort()
+			return
+		}
+		c.Set("user", user)
+		c.Next()
+	}
+}
+
+func baseAuth(c *gin.Context) (*models.User, error) {
+	token := c.GetHeader("Authorization")
+	redisKey := constant.UserToken + token
+	ctx := context.Background()
+	var err error
+	userInfoStr, err := core.RedisClient.Get(ctx, redisKey).Result()
+	if err != nil {
+		c.JSON(403, gin.H{})
+		c.Abort()
+		return nil, err
+	}
+	userInfo := &models.UserSchema{}
+	err = json.Unmarshal([]byte(userInfoStr), userInfo)
+	if err != nil {
+		c.JSON(403, gin.H{})
+		c.Abort()
+		return nil, err
+	}
+	user, err := daos.UserDAO.DoGetUserByUserID(userInfo.ID)
+	if err != nil {
+		c.JSON(403, gin.H{})
+		c.Abort()
+		return nil, err
+	}
+	return user, nil
 }

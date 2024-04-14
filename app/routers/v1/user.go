@@ -1,6 +1,7 @@
 package router_v1
 
 import (
+	"fuge/app/middleware"
 	models "fuge/app/models/v1"
 	services "fuge/app/service/v1"
 	"net/http"
@@ -10,7 +11,8 @@ import (
 
 func UserRouter(routerGroup *gin.RouterGroup) {
 	userGroup := routerGroup.Group("/user")
-	loginWechat(userGroup) // 登陆微信
+	loginWechat(userGroup)    // 登陆微信
+	getPhoneNumber(userGroup) // 获取用户手机号
 }
 
 // @Summary 登陆微信
@@ -33,5 +35,29 @@ func loginWechat(routerGroup *gin.RouterGroup) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		c.JSON(200, ret)
+	})
+}
+
+// @Summary 获取用户手机号
+// @Description 获取用户手机号
+// @Tags v1
+// @Accept json
+// @Produce json
+// @Success 200 {string} Helloworld
+// @Router /user/phone-number [get]
+// @Param code query string true "微信code"
+// @Param Authorization header string true "Authorization"
+func getPhoneNumber(routerGroup *gin.RouterGroup) {
+	routerGroup.GET("/phone-number", middleware.AuthUnCompleteMiddleWare(), func(c *gin.Context) {
+		code := c.Query("code")
+		data, exist := c.Get("user")
+		if !exist {
+			c.JSON(403, gin.H{})
+			c.Abort()
+			return
+		}
+		user := data.(*models.User)
+		services.WechatService.GetPhoneNumber(code, user)
+		c.JSON(200, gin.H{})
 	})
 }
