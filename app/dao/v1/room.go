@@ -10,8 +10,11 @@ type roomDAO struct {
 
 var RoomDAO *roomDAO = &roomDAO{}
 
-func (s *roomDAO) DoGetRoomsByStoreId(storeId int) []models.Room {
+func (s *roomDAO) DoGetRoomsByStoreId(storeId int) ([]models.Room, error) {
 	var rooms []models.Room
-	core.DB.Where("store_id = ?", storeId).Find(&rooms)
-	return rooms
+	err := core.DB.Where("store_id = ?", storeId).Find(&rooms).Error
+	if err != nil {
+		return nil, err
+	}
+	return rooms, nil
 }

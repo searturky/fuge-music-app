@@ -17,18 +17,22 @@ type wechatService struct {
 
 var WechatService *wechatService = &wechatService{}
 
-func (s *wechatService) GetPhoneNumber(code string, user *models.User) {
+func (s *wechatService) GetPhoneNumber(code string, user *models.User) error {
 	// 获取小程序Authtoken
-	authToken := ensureWechatAuthToken()
+	authToken, err := ensureWechatAuthToken()
+	if err != nil {
+		return err
+	}
 	// 获取手机号
 	data, err := daos.WechatDAO.DoGetPhoneNumber(code, authToken)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = daos.UserDAO.DoSavePhoneNumber(data, user)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (s *wechatService) LoginWechat(lwi *models.LoginWeChatIn) (map[string]interface{}, error) {
@@ -79,20 +83,20 @@ func setLoginTokenToRedis(key, token string) {
 	}
 }
 
-func ensureWechatAuthToken() string {
+func ensureWechatAuthToken() (string, error) {
 	ctx := context.Background()
 	token, err := core.RedisClient.Get(ctx, "wechat_access_token").Result()
 	if err != nil {
 		tokenRes, err := core.Client.GetAuthToken()
 		if err != nil {
-			panic(err)
+			return "", nil
 		}
 		expire := time.Second * time.Duration(tokenRes.ExpiresIn-100)
 		err = core.RedisClient.SetEx(ctx, "wechat_access_token", tokenRes.AccessToken, expire).Err()
 		if err != nil {
-			panic(err)
+			return "", nil
 		}
 		token = tokenRes.AccessToken
 	}
-	return token
+	return token, nil
 }

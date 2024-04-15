@@ -28,14 +28,14 @@ func RoomRouter(routerGroup *gin.RouterGroup) {
 func getRoomByStoreId(routerGroup *gin.RouterGroup) {
 	routerGroup.GET("/store/:storeId",
 		func(c *gin.Context) {
-			store_id, err := strconv.Atoi(c.Param("storeId"))
+			storeId, err := strconv.Atoi(c.Param("storeId"))
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
-			services.RoomService.GetRoomByStoreId(store_id)
+			services.RoomService.GetRoomByStoreId(storeId)
 			c.JSON(200, gin.H{
-				"message": store_id,
+				"message": storeId,
 			})
 		},
 	)

@@ -57,7 +57,11 @@ func getPhoneNumber(routerGroup *gin.RouterGroup) {
 			return
 		}
 		user := data.(*models.User)
-		services.WechatService.GetPhoneNumber(code, user)
+		err := services.WechatService.GetPhoneNumber(code, user)
+		if err != nil {
+			c.JSON(500, gin.H{})
+			return
+		}
 		c.JSON(200, gin.H{})
 	})
 }
