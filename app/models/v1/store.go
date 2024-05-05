@@ -6,6 +6,8 @@ import (
 
 type Store struct {
 	BaseModel
-	Name       string
-	Desciption string
+	Name       string `gorm:"type:varchar(50);"`
+	Desciption string `gorm:"type:text; default:null"`
+	Location   string `gorm:"type:varchar(50);"`
+	Users      []User `gorm:"many2many:store_users;"`
 }

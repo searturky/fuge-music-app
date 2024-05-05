@@ -47,9 +47,12 @@ type BaseModel struct {
 
 var Models = []interface{}{
 	&Booking{},
-	&Location{},
+	// &Location{},
 	&Store{},
 	&User{},
 	&Service{},
 	&Role{},
+	&StoreSetting{},
+	&ServiceCategory{},
+	&Schedule{},
 }

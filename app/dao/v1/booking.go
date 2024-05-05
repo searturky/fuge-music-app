@@ -11,9 +11,5 @@ type bookingDAO struct {
 var BookingDAO *bookingDAO = &bookingDAO{}
 
 func (s *bookingDAO) DoCreateBooking(cbi *models.CreateBookingIn) {
-	core.DB.Create(&models.Booking{
-		Date:          cbi.Date.Time(),
-		StartDateTime: cbi.StartDateTime,
-		EndDateTime:   cbi.EndDateTime,
-	})
+	core.DB.Create(&models.Booking{})
 }

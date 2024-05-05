@@ -33,6 +33,9 @@ type User struct {
 	Country    string   `gorm:"type:varchar(50);default: null"`
 	Gender     Gender   `gorm:"type:int;default: 0"`
 	Language   Language `gorm:"type:varchar(50);default: zh_CN"`
+
+	Stores   []Store   `gorm:"many2many:store_users;"`
+	Services []Service `gorm:"many2many:user_services;"`
 }
 
 type UserSchema struct {

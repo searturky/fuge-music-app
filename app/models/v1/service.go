@@ -8,9 +8,18 @@ import (
 
 type Service struct {
 	BaseModel
-	Name       string `gorm:"type:varchar(50);"`
-	Desciption string
-	TimePeriod uint16 `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0"`
+	StoreID     int     `gorm:"required; not null; index"`
+	CategoryID  int     `gorm:"required; not null; index"`
+	Name        string  `gorm:"type:varchar(50);"`
+	Description string  `gorm:"type:text; default:null"`
+	Price       float64 `gorm:"type:decimal(10,2); default:0.00;"` // 10位整数, 2位小数
+	StartTime   string  `gorm:"type:varchar(10);required; not null;"`
+	EndTime     string  `gorm:"type:varchar(10);required; not null;"`
+	TimePeriod  uint    `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0"`
+
+	Users []User `gorm:"many2many:user_services;"`
+	Rooms []Room `gorm:"many2many:room_services;"`
+	// WorkWeekday []int  `gorm:"type:integer[];"` // 0: Sunday, 1: Monday, 2: Tuesday, 3: Wednesday, 4: Thursday, 5: Friday, 6: Saturday
 }
 
 type CreateServiceIn struct {

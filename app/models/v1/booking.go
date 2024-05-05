@@ -6,11 +6,16 @@ import (
 
 type Booking struct {
 	BaseModel
-	UserID        uint
-	Date          time.Time `gorm:"required; not null; index"`
-	StartDateTime time.Time
-	EndDateTime   time.Time
-	LocationID    uint
+	StoreID           int    `gorm:"required; not null; index"`
+	RoomID            int    `gorm:"required; not null; index"`
+	ServiceID         int    `gorm:"required; not null; index"`
+	UserID            int    `gorm:"required; not null; index"`
+	BookUserID        int    `gorm:"required; not null; index"`
+	Date              string `gorm:"type:varchar(30);"`
+	BookingTime       string `gorm:"type:varchar(30);"`
+	BookingTimePeriod uint   `gorm:"required; not null;"`
+	IsSigned          bool   `gorm:"type:boolean; default:false"`
+	IsCancel          bool   `gorm:"type:boolean; default:false"`
 }
 
 type CreateBookingIn struct {

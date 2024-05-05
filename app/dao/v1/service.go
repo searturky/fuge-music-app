@@ -12,9 +12,8 @@ var ServiceDAO *serviceDAO = &serviceDAO{}
 
 func (s *serviceDAO) DoCreateService(csi *models.CreateServiceIn) {
 	if err := core.DB.Create(&models.Service{
-		Name:       csi.Name,
-		Desciption: csi.Description,
-		TimePeriod: csi.TimePeriod,
+		Name:        csi.Name,
+		Description: csi.Description,
 	}).Error; err != nil {
 		panic(err)
 	}
