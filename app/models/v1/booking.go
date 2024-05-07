@@ -10,7 +10,7 @@ type Booking struct {
 	RoomID            int    `gorm:"required; not null; index"`
 	ServiceID         int    `gorm:"required; not null; index"`
 	UserID            int    `gorm:"required; not null; index"`
-	BookUserID        int    `gorm:"required; not null; index"`
+	BookingUserID     int    `gorm:"required; not null; index"`
 	Date              string `gorm:"type:varchar(30);"`
 	BookingTime       string `gorm:"type:varchar(30);"`
 	BookingTimePeriod uint   `gorm:"required; not null;"`

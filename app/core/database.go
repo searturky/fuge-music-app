@@ -133,16 +133,20 @@ func initService() {
 	}).Error; err != nil {
 		panic(err)
 	}
+	// today
+	// today := time.Now()
+	// service1Start := time.Date(today.Year(), today.Month(), today.Day(), 9, 0, 0, 0, time.Local)
+	// service1End := time.Date(today.Year(), today.Month(), today.Day(), 21, 0, 0, 0, time.Local)
 	service1 := &modelV1.Service{
-		StoreID:    store.ID,
-		CategoryID: category.ID,
-		Name:       "古典钢琴",
-		Price:      100.00,
-		StartTime:  "09:00",
-		EndTime:    "21:00",
-		TimePeriod: 60,
-		Users:      []modelV1.User{*user},
-		Rooms:      []modelV1.Room{*room},
+		StoreID:        store.ID,
+		CategoryID:     category.ID,
+		Name:           "古典钢琴",
+		Price:          100.00,
+		DailyStartTime: "9:00",
+		DailyEndTime:   "21:00",
+		TimePeriod:     60,
+		Users:          []modelV1.User{*user},
+		Rooms:          []modelV1.Room{*room},
 	}
 	if err := DB.FirstOrCreate(service1, &modelV1.Service{
 		Name: "古典钢琴",
@@ -151,15 +155,15 @@ func initService() {
 	}
 
 	service2 := &modelV1.Service{
-		StoreID:    store.ID,
-		CategoryID: category.ID,
-		Name:       "流行钢琴",
-		Price:      120,
-		StartTime:  "10:00",
-		EndTime:    "20:00",
-		TimePeriod: 60,
-		Users:      []modelV1.User{*user},
-		Rooms:      []modelV1.Room{*room},
+		StoreID:        store.ID,
+		CategoryID:     category.ID,
+		Name:           "流行钢琴",
+		Price:          120,
+		DailyStartTime: "10:00",
+		DailyEndTime:   "20:00",
+		TimePeriod:     60,
+		Users:          []modelV1.User{*user},
+		Rooms:          []modelV1.Room{*room},
 	}
 
 	if err := DB.FirstOrCreate(service2, &modelV1.Service{
@@ -169,15 +173,15 @@ func initService() {
 	}
 
 	service3 := &modelV1.Service{
-		StoreID:    store.ID,
-		CategoryID: category.ID,
-		Name:       "爵士钢琴",
-		Price:      150,
-		StartTime:  "10:00",
-		EndTime:    "20:00",
-		TimePeriod: 60,
-		Users:      []modelV1.User{*user},
-		Rooms:      []modelV1.Room{*room},
+		StoreID:        store.ID,
+		CategoryID:     category.ID,
+		Name:           "爵士钢琴",
+		Price:          150,
+		DailyStartTime: "10:00",
+		DailyEndTime:   "20:00",
+		TimePeriod:     60,
+		Users:          []modelV1.User{*user},
+		Rooms:          []modelV1.Room{*room},
 	}
 	if err := DB.FirstOrCreate(service3, &modelV1.Service{
 		Name: "爵士钢琴",

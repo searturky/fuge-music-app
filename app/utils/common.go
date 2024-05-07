@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fuge/app/core"
+
 	"github.com/google/uuid"
 )
 

@@ -18,3 +18,11 @@ func (s *serviceDAO) DoCreateService(csi *models.CreateServiceIn) {
 		panic(err)
 	}
 }
+
+func (s *serviceDAO) DoGetServiceByID(id int) *models.Service {
+	service := &models.Service{}
+	if err := core.DB.Where("id = ?", id).First(service).Error; err != nil {
+		panic(err)
+	}
+	return service
+}

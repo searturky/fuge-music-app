@@ -17,4 +17,5 @@ func Router(routerGroup *gin.RouterGroup) {
 	UserRouter(v1Group)        // 用户
 	RoomRouter(v1Group)        // 房间
 	AppointmentRouter(v1Group) // 预约
+	ScheduleRouter(v1Group)    // 排班
 }

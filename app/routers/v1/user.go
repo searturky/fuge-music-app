@@ -27,7 +27,7 @@ func loginWechat(routerGroup *gin.RouterGroup) {
 	routerGroup.POST("/login-wechat", func(c *gin.Context) {
 		lwi := &models.LoginWeChatIn{}
 		if err := c.ShouldBindJSON(lwi); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 			return
 		}
 		ret, err := services.WechatService.LoginWechat(lwi)

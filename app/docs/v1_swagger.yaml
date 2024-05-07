@@ -42,6 +42,27 @@ definitions:
     required:
     - code
     type: object
+  models_v1.QuickGenerateIn:
+    properties:
+      date:
+        type: string
+      room_id:
+        type: integer
+      service_category_id:
+        type: integer
+      service_id:
+        type: integer
+      store_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - date
+    - room_id
+    - service_id
+    - store_id
+    - user_id
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -119,6 +140,29 @@ paths:
       tags:
       - v1
       - 门店相关
+  /schedule/quick-generate:
+    post:
+      consumes:
+      - application/json
+      description: 快速生成一周内的排班
+      parameters:
+      - description: 快速生成排班参数
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/models_v1.QuickGenerateIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 快速生成一周内的排班
+      tags:
+      - v1
+      - 排班相关
   /user/login-wechat:
     post:
       consumes:

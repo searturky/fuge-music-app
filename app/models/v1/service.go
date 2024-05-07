@@ -2,20 +2,21 @@ package models_v1
 
 import (
 	// "gorm.io/gorm"
+
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
 
 type Service struct {
 	BaseModel
-	StoreID     int     `gorm:"required; not null; index"`
-	CategoryID  int     `gorm:"required; not null; index"`
-	Name        string  `gorm:"type:varchar(50);"`
-	Description string  `gorm:"type:text; default:null"`
-	Price       float64 `gorm:"type:decimal(10,2); default:0.00;"` // 10位整数, 2位小数
-	StartTime   string  `gorm:"type:varchar(10);required; not null;"`
-	EndTime     string  `gorm:"type:varchar(10);required; not null;"`
-	TimePeriod  uint    `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0"`
+	StoreID        int     `gorm:"required; not null; index"`
+	CategoryID     int     `gorm:"required; not null; index"`
+	Name           string  `gorm:"type:varchar(50);"`
+	Description    string  `gorm:"type:text; default:null"`
+	Price          float64 `gorm:"type:decimal(10,2); default:0.00;"` // 10位整数, 2位小数
+	DailyStartTime string  `gorm:"type:varchar(30);"`                 // "09:00"
+	DailyEndTime   string  `gorm:"type:varchar(30);"`                 // "21:00"
+	TimePeriod     int     `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0"`
 
 	Users []User `gorm:"many2many:user_services;"`
 	Rooms []Room `gorm:"many2many:room_services;"`
