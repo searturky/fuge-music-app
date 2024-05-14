@@ -12,14 +12,15 @@ var ScheduleService *scheduleService = &scheduleService{}
 
 func (s *scheduleService) QuickGenerate(qgi *models.QuickGenerateIn) error {
 	// 先查询是否已经有排班
-	schedules, err := daos.ScheduleDAO.DoGetWithinDaysScheduleList(qgi.StartDate, qgi.GenerateDays, qgi.UserID)
+	schedules, err := daos.ScheduleDAO.DoGetWithinDaysScheduleList(qgi.StartDate, qgi.GenerateDays)
 	if err != nil {
 		return err
 	}
 	// 已经生成过的排班
 	scheduledDays := make(map[string]struct{})
 	for _, schedule := range schedules {
-		scheduledDays[schedule.Date.Format("2005-04-04")] = struct{}{}
+		dateStr := schedule.Date.Format("2006-01-02")
+		scheduledDays[dateStr] = struct{}{}
 	}
 	// 期望生成的排班
 	expectedDays := make(map[string]struct{})
@@ -61,7 +62,6 @@ func generateSchedule(qgi *models.QuickGenerateIn, shouldGenerateDays []string) 
 		}
 		schedule := &models.Schedule{
 			ServiceID:      service.ID,
-			UserID:         qgi.UserID,
 			Date:           scheduleTime,
 			DailyStartTime: service.DailyStartTime,
 			DailyEndTime:   service.DailyEndTime,

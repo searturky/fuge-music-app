@@ -10,11 +10,11 @@ type scheduleDAO struct{}
 
 var ScheduleDAO *scheduleDAO = &scheduleDAO{}
 
-func (s *scheduleDAO) DoGetWithinDaysScheduleList(startDate models.Date, generateDays int, userId int) ([]models.Schedule, error) {
+func (s *scheduleDAO) DoGetWithinDaysScheduleList(startDate models.Date, generateDays int) ([]models.Schedule, error) {
 	// var schedules []*models.Schedule
 	schedules := []models.Schedule{}
 	date := time.Time(startDate)
-	if err := core.DB.Where("date >= ? AND date < ?", date, date.AddDate(0, 0, generateDays)).Where("user_id = ?", userId).Find(&schedules).Error; err != nil {
+	if err := core.DB.Where("date >= ? AND date < ?", date, date.AddDate(0, 0, generateDays)).Find(&schedules).Error; err != nil {
 		return nil, err
 	}
 
@@ -22,6 +22,9 @@ func (s *scheduleDAO) DoGetWithinDaysScheduleList(startDate models.Date, generat
 }
 
 func (s *scheduleDAO) DoCreateSchedule(schedule []*models.Schedule) error {
+	if len(schedule) == 0 {
+		return nil
+	}
 	if err := core.DB.Create(schedule).Error; err != nil {
 		return err
 	}
