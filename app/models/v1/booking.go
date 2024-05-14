@@ -6,9 +6,9 @@ import (
 
 type Booking struct {
 	BaseModel
-	StoreID           int    `gorm:"required; not null; index"`
-	RoomID            int    `gorm:"required; not null; index"`
-	ServiceID         int    `gorm:"required; not null; index"`
+	StoreID           int    `gorm:"required; not null; index; comment:门店ID"`
+	RoomID            int    `gorm:"required; not null; index; comment:房间ID"`
+	ServiceID         int    `gorm:"required; not null; index; comment:服务ID"`
 	UserID            int    `gorm:"required; not null; index"`
 	BookingUserID     int    `gorm:"required; not null; index"`
 	Date              string `gorm:"type:varchar(30);"`

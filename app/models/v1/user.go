@@ -20,19 +20,19 @@ const (
 
 type User struct {
 	BaseModel
-	Nickname   string   `gorm:"type:varchar(20);"`
-	Desciption string   `gorm:"default: null"`
-	RoleID     int      `gorm:"default: null"`
-	ServiceID  int      `gorm:"default: null"`
-	OpenID     string   `gorm:"type:varchar(50);default: null"`
-	Phone      string   `gorm:"type:varchar(50);default: null"`
-	AvatarUrl  string   `gorm:"type:varchar(255);default: null"`
-	Status     Status   `gorm:"type:varchar(20)"`
-	Province   string   `gorm:"type:varchar(50);default: null"`
-	City       string   `gorm:"type:varchar(50);default: null"`
-	Country    string   `gorm:"type:varchar(50);default: null"`
-	Gender     Gender   `gorm:"type:int;default: 0"`
-	Language   Language `gorm:"type:varchar(50);default: zh_CN"`
+	Nickname   string   `gorm:"type:varchar(20); comment: 用户昵称"`
+	Desciption string   `gorm:"default: null; comment: 用户描述"`
+	RoleID     int      `gorm:"default: null; comment: 用户角色ID"`
+	ServiceID  int      `gorm:"default: null; comment: 用户服务ID"`
+	OpenID     string   `gorm:"type:varchar(50); default: null; comment: 用户OpenID"`
+	Phone      string   `gorm:"type:varchar(50); default:null; comment:用户手机号"`
+	AvatarUrl  string   `gorm:"type:varchar(255); default: null; comment: 用户头像链接"`
+	Status     Status   `gorm:"type:varchar(20); comment: 用户信息完善状态"`
+	Province   string   `gorm:"type:varchar(50); default: null; comment: 用户省份"`
+	City       string   `gorm:"type:varchar(50); default: null; comment: 用户城市"`
+	Country    string   `gorm:"type:varchar(50); default: null; comment: 用户国家"`
+	Gender     Gender   `gorm:"type:int; default: 0; comment: 用户性别"`
+	Language   Language `gorm:"type:varchar(50); default: zh_CN; comment: 用户语言"`
 
 	Stores   []Store   `gorm:"many2many:store_users;"`
 	Services []Service `gorm:"many2many:user_services;"`

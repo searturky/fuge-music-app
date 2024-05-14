@@ -1,7 +1,6 @@
 package router_v1
 
 import (
-	"fuge/app/middleware"
 	models "fuge/app/models/v1"
 	services "fuge/app/service/v1"
 	"net/http"
@@ -23,7 +22,8 @@ func ScheduleRouter(routerGroup *gin.RouterGroup) {
 // @Router /schedule/quick-generate [post]
 // @Param param body models.QuickGenerateIn true "快速生成排班参数"
 func quickGenerate(routerGroup *gin.RouterGroup) {
-	routerGroup.POST("/quick-generate", middleware.AuthMiddleWare(), func(c *gin.Context) {
+	// routerGroup.POST("/quick-generate", middleware.AuthMiddleWare(), func(c *gin.Context) {
+	routerGroup.POST("/quick-generate", func(c *gin.Context) {
 		qgi := &models.QuickGenerateIn{}
 		if err := c.ShouldBindJSON(qgi); err != nil {
 			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})

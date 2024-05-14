@@ -27,3 +27,11 @@ env-up:
 
 env-down:
 	docker-compose -f docker/docker-compose-basic.yaml down
+
+clean-docker-pg-data:
+	sudo rm -rf docker/data/postgresql
+
+clean-docker-redis-data:
+	sudo rm -rf docker/data/redis
+
+clean-data: clean-docker-pg-data clean-docker-redis-data

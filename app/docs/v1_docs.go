@@ -326,27 +326,20 @@ const docTemplatev1 = `{
         "models_v1.QuickGenerateIn": {
             "type": "object",
             "required": [
-                "date",
-                "room_id",
+                "generate_days",
                 "service_id",
-                "store_id",
+                "start_date",
                 "user_id"
             ],
             "properties": {
-                "date": {
-                    "type": "string"
-                },
-                "room_id": {
-                    "type": "integer"
-                },
-                "service_category_id": {
+                "generate_days": {
                     "type": "integer"
                 },
                 "service_id": {
                     "type": "integer"
                 },
-                "store_id": {
-                    "type": "integer"
+                "start_date": {
+                    "type": "string"
                 },
                 "user_id": {
                     "type": "integer"

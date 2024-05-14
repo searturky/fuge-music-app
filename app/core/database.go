@@ -126,7 +126,6 @@ func initService() {
 	}).Error; err != nil {
 		panic(err)
 	}
-
 	room := &modelV1.Room{}
 	if err := DB.First(room, &modelV1.Room{
 		Name: "钢琴教室1",
@@ -142,7 +141,7 @@ func initService() {
 		CategoryID:     category.ID,
 		Name:           "古典钢琴",
 		Price:          100.00,
-		DailyStartTime: "9:00",
+		DailyStartTime: "09:00",
 		DailyEndTime:   "21:00",
 		TimePeriod:     60,
 		Users:          []modelV1.User{*user},

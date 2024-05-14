@@ -39,10 +39,10 @@ func (mt *Date) Time() time.Time {
 
 type BaseModel struct {
 	ID        int       `gorm:"primarykey"`
-	CreatedAt time.Time `gorm:"autoCreateTime; default:now()"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime; default:now()"`
-	DeletedAt time.Time `gorm:"default: null"`
-	Disabled  bool      `gorm:"default:false"`
+	CreatedAt time.Time `gorm:"autoCreateTime; default:now(); comment:创建时间"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime; default:now(); comment:更新时间"`
+	DeletedAt time.Time `gorm:"default: null; comment:删除时间"`
+	Disabled  bool      `gorm:"default:false; comment:是否禁用"`
 }
 
 var Models = []interface{}{
