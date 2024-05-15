@@ -1,8 +1,9 @@
 package models_v1
 
 import (
-	"github.com/lib/pq"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type Schedule struct {
@@ -10,6 +11,7 @@ type Schedule struct {
 	// StoreID           int         `gorm:"type:int; default:null; comment:门店ID"`
 	// RoomID            int         `gorm:"type:int; default:null; comment:房间ID"`
 	// ServiceCategoryID int         `gorm:"type:int; default:null; comment:服务分类ID"`
+	UserID         int            `gorm:"type:int; default:null; comment:服务提供者ID"`
 	ServiceID      int            `gorm:"type:int; default:null; comment:服务ID"`
 	Date           time.Time      `gorm:"type:timestamptz(6); comment:日期"`
 	DailyStartTime string         `gorm:"type:varchar(30); comment:每日开始时间"`
@@ -19,12 +21,16 @@ type Schedule struct {
 }
 
 type QuickGenerateIn struct {
-	ServiceID    int  `json:"service_id" binding:"required"`
-	StartDate    Date `json:"start_date" binding:"required"`
-	GenerateDays int  `json:"generate_days" binding:"required"`
+	UserID         int    `json:"user_id" binding:"required" example:"1"`
+	ServiceID      int    `json:"service_id" binding:"required" example:"1"`
+	StartDate      Date   `json:"start_date" binding:"required" example:"2024-05-15"`
+	GenerateDays   int    `json:"generate_days" binding:"required" example:"7"`
+	DailyStartTime string `json:"daily_start_time" binding:"required" example:"09:00"`
+	DailyEndTime   string `json:"daily_end_time" binding:"required" example:"21:00"`
 }
 
 type GetScheduleIn struct {
-	ServiceID int  `json:"service_id" binding:"required"`
-	Date      Date `json:"date" binding:"required"`
+	ServiceID int       `form:"s" binding:"required" example:"1" description:"服务ID"`
+	UserID    int       `form:"u" binding:"required" example:"1" description:"服务者用户ID"`
+	Date      time.Time `form:"d" binding:"required" example:"2024-05-15" description:"日期2024-05-15" time_format:"2006-01-02"`
 }

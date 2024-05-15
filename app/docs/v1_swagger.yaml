@@ -44,15 +44,27 @@ definitions:
     type: object
   models_v1.QuickGenerateIn:
     properties:
+      daily_end_time:
+        example: "21:00"
+        type: string
+      daily_start_time:
+        example: "09:00"
+        type: string
       generate_days:
+        example: 7
         type: integer
       service_id:
+        example: 1
         type: integer
       start_date:
+        example: "2024-05-15"
         type: string
       user_id:
+        example: 1
         type: integer
     required:
+    - daily_end_time
+    - daily_start_time
     - generate_days
     - service_id
     - start_date
@@ -135,11 +147,43 @@ paths:
       tags:
       - v1
       - 门店相关
+  /schedule:
+    get:
+      consumes:
+      - application/json
+      description: 获取排班
+      parameters:
+      - example: "2024-05-15"
+        in: query
+        name: d
+        required: true
+        type: string
+      - example: 1
+        in: query
+        name: s
+        required: true
+        type: integer
+      - example: 1
+        in: query
+        name: u
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 获取排班
+      tags:
+      - v1
+      - 排班相关
   /schedule/quick-generate:
     post:
       consumes:
       - application/json
-      description: 快速生成一周内的排班
+      description: 快速生成排班
       parameters:
       - description: 快速生成排班参数
         in: body
@@ -154,7 +198,7 @@ paths:
           description: OK
           schema:
             type: string
-      summary: 快速生成一周内的排班
+      summary: 快速生成排班
       tags:
       - v1
       - 排班相关

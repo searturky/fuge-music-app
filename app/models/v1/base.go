@@ -9,7 +9,7 @@ type Date time.Time
 
 var _ json.Unmarshaler = &Date{}
 
-const dateFormat = "2006-01-02"
+const dateFormat = time.DateOnly
 
 func (mt *Date) UnmarshalJSON(bs []byte) error {
 	var s string

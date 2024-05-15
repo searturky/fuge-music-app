@@ -121,9 +121,9 @@ const docTemplatev1 = `{
                 }
             }
         },
-        "/schedule/quick-generate": {
-            "post": {
-                "description": "快速生成一周内的排班",
+        "/schedule": {
+            "get": {
+                "description": "获取排班",
                 "consumes": [
                     "application/json"
                 ],
@@ -134,7 +134,54 @@ const docTemplatev1 = `{
                     "v1",
                     "排班相关"
                 ],
-                "summary": "快速生成一周内的排班",
+                "summary": "获取排班",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "2024-05-15",
+                        "name": "d",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "s",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "example": 1,
+                        "name": "u",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/schedule/quick-generate": {
+            "post": {
+                "description": "快速生成排班",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1",
+                    "排班相关"
+                ],
+                "summary": "快速生成排班",
                 "parameters": [
                     {
                         "description": "快速生成排班参数",
@@ -326,23 +373,37 @@ const docTemplatev1 = `{
         "models_v1.QuickGenerateIn": {
             "type": "object",
             "required": [
+                "daily_end_time",
+                "daily_start_time",
                 "generate_days",
                 "service_id",
                 "start_date",
                 "user_id"
             ],
             "properties": {
+                "daily_end_time": {
+                    "type": "string",
+                    "example": "21:00"
+                },
+                "daily_start_time": {
+                    "type": "string",
+                    "example": "09:00"
+                },
                 "generate_days": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 7
                 },
                 "service_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "start_date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-05-15"
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }

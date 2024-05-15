@@ -9,14 +9,14 @@ import (
 
 type Service struct {
 	BaseModel
-	StoreID        int     `gorm:"required; not null; index; comment:门店ID"`
-	CategoryID     int     `gorm:"required; not null; index; comment:服务分类ID"`
-	Name           string  `gorm:"type:varchar(50); comment:服务名称"`
-	Description    string  `gorm:"type:text; default:null; comment:服务描述"`
-	Price          float64 `gorm:"type:decimal(10,2); default:0.00; comment:价格"`                                                     // 10位整数, 2位小数
-	DailyStartTime string  `gorm:"type:varchar(30); comment:每日服务开始时间"`                                                               // "09:00"
-	DailyEndTime   string  `gorm:"type:varchar(30); comment:每日服务结束时间"`                                                               // "21:00"
-	TimePeriod     int     `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0; comment:时间间隔"` // 1-1440分钟, 3600分钟必须能被整除
+	StoreID     int     `gorm:"required; not null; index; comment:门店ID"`
+	CategoryID  int     `gorm:"required; not null; index; comment:服务分类ID"`
+	Name        string  `gorm:"type:varchar(50); comment:服务名称"`
+	Description string  `gorm:"type:text; default:null; comment:服务描述"`
+	Price       float64 `gorm:"type:decimal(10,2); default:0.00; comment:价格"` // 10位整数, 2位小数
+	// DailyStartTime string  `gorm:"type:varchar(30); comment:每日服务开始时间"`                                                               // "09:00"
+	// DailyEndTime   string  `gorm:"type:varchar(30); comment:每日服务结束时间"`                                                               // "21:00"
+	TimePeriod int `gorm:"default:1; check:time_period > 0 and time_period < 1440 and 3600 % time_period = 0; comment:时间间隔"` // 1-1440分钟, 3600分钟必须能被整除
 
 	Users []User `gorm:"many2many:user_services;"`
 	Rooms []Room `gorm:"many2many:room_services;"`

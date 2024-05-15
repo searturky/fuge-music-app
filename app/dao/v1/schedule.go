@@ -30,3 +30,15 @@ func (s *scheduleDAO) DoCreateSchedule(schedule []*models.Schedule) error {
 	}
 	return nil
 }
+
+func (s *scheduleDAO) DoGetSchedule(gsi *models.GetScheduleIn) (*models.Schedule, error) {
+	schedule := &models.Schedule{
+		Date:      gsi.Date,
+		UserID:    gsi.UserID,
+		ServiceID: gsi.ServiceID,
+	}
+	if err := core.DB.Find(schedule).Error; err != nil {
+		return nil, err
+	}
+	return schedule, nil
+}
