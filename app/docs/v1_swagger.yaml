@@ -2,19 +2,43 @@ basePath: /api/v1
 definitions:
   models_v1.CreateBookingIn:
     properties:
+      booking_time:
+        example: "09:00"
+        type: string
+      booking_time_period:
+        example: 60
+        type: integer
+      booking_user_id:
+        example: 1
+        type: integer
       date:
-        format: date
+        example: "2024-05-15"
         type: string
-      endDateTime:
-        format: date-time
-        type: string
-      startDateTime:
-        format: date-time
-        type: string
+      room_id:
+        example: 1
+        type: integer
+      schedule_id:
+        example: 1
+        type: integer
+      service_id:
+        example: 1
+        type: integer
+      store_id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
     required:
+    - booking_time
+    - booking_time_period
+    - booking_user_id
     - date
-    - endDateTime
-    - startDateTime
+    - room_id
+    - schedule_id
+    - service_id
+    - store_id
+    - user_id
     type: object
   models_v1.CreateServiceIn:
     properties:
@@ -33,6 +57,23 @@ definitions:
     - description
     - name
     - timePeriod
+    type: object
+  models_v1.GetScheduleOut:
+    properties:
+      date:
+        example: "2024-05-15"
+        type: string
+      schedule_id:
+        description: 返回"2024-05-15"格式的 time.Time 字符串
+        example: 1
+        type: integer
+      stateful_time_slots:
+        items:
+          $ref: '#/definitions/models_v1.StatefulTimeSlot'
+        type: array
+      time_period:
+        example: 60
+        type: integer
     type: object
   models_v1.LoginWeChatIn:
     properties:
@@ -69,6 +110,15 @@ definitions:
     - service_id
     - start_date
     - user_id
+    type: object
+  models_v1.StatefulTimeSlot:
+    properties:
+      is_available:
+        example: true
+        type: boolean
+      time_slot:
+        example: "09:00"
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -120,6 +170,29 @@ paths:
       summary: 获取预定时间
       tags:
       - v1
+  /booking:
+    post:
+      consumes:
+      - application/json
+      description: 创建预定
+      parameters:
+      - description: 预定日期
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/models_v1.CreateBookingIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 创建预定
+      tags:
+      - v1
+      - 预定相关
   /room/store/{storeId}:
     get:
       consumes:
@@ -161,12 +234,10 @@ paths:
       - example: 1
         in: query
         name: s
-        required: true
         type: integer
       - example: 1
         in: query
         name: u
-        required: true
         type: integer
       produces:
       - application/json
@@ -174,7 +245,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/models_v1.GetScheduleOut'
       summary: 获取排班
       tags:
       - v1

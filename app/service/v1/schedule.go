@@ -68,6 +68,7 @@ func generateSchedule(qgi *models.QuickGenerateIn, shouldGenerateDays []string) 
 			DailyStartTime: qgi.DailyStartTime,
 			DailyEndTime:   qgi.DailyEndTime,
 			TimeSlots:      slots,
+			TimePeriod:     service.TimePeriod,
 		}
 		schedules = append(schedules, schedule)
 	}
@@ -93,7 +94,7 @@ func generateTimeSlots(startTime, endTime string, timePeriod int, scheduleDate t
 	return timeSlots, nil
 }
 
-func (s *scheduleService) GetScheduleByUserAndDate(gsi *models.GetScheduleIn) ([]*models.Schedule, error) {
+func (s *scheduleService) GetScheduleByUserAndDate(gsi *models.GetScheduleIn) (*models.GetScheduleOut, error) {
 	schedule, err := daos.ScheduleDAO.DoGetSchedule(gsi)
 	if err != nil {
 		return nil, err
@@ -102,19 +103,66 @@ func (s *scheduleService) GetScheduleByUserAndDate(gsi *models.GetScheduleIn) ([
 	if err != nil {
 		return nil, err
 	}
-	print(slots)
-	// return daos.ScheduleDAO.DoGetScheduleList(gsi.ServiceID, gsi.Date)
-	return nil, nil
+	gso := &models.GetScheduleOut{
+		ScheduleID:        schedule.ID,
+		Date:              schedule.Date.Format(time.DateOnly),
+		TimePeriod:        schedule.TimePeriod,
+		StatefulTimeSlots: slots,
+	}
+	return gso, nil
 }
 
-func getScheduleTimeSlotsShowWithState(schedule *models.Schedule) ([]string, error) {
-	// 返回当日排班时间段，包含预约状态
+func getScheduleTimeSlotsShowWithState(schedule *models.Schedule) ([]models.StatefulTimeSlot, error) {
+	/*
+		返回当日含预约状态的排班时间段
+	*/
 	timeSlots := schedule.TimeSlots
 	// 获取当日已预约时间段
 	bookings, err := daos.BookingDAO.DoGetBookingsBySchedule(schedule)
 	if err != nil {
 		return nil, err
 	}
-	print(timeSlots, bookings)
-	return nil, nil
+	bookedTimes := []time.Time{}
+	date := schedule.Date
+	for _, booking := range bookings {
+		startDatetimeStr := booking.Date.Format(time.DateOnly) + " " + booking.BookingTime
+		startTime, err := time.ParseInLocation(constant.DateTimeNoSecond, startDatetimeStr, time.Local)
+		if err != nil {
+			return nil, err
+		}
+		bookedTimes = append(bookedTimes, startTime)
+		endTime := startTime.Add(time.Duration(booking.BookingTimePeriod) * time.Minute)
+		bookedTimes = append(bookedTimes, endTime)
+	}
+	stateTimes, err := buildStateTimeSlots(timeSlots, bookedTimes, date)
+	if err != nil {
+		return nil, err
+	}
+	return stateTimes, nil
+}
+
+func buildStateTimeSlots(timeSlots []string, bookedTimes []time.Time, date time.Time) ([]models.StatefulTimeSlot, error) {
+	/*
+		根据预约时间段，构建排班时间段的预约状态
+	*/
+	statefulTimeSlots := []models.StatefulTimeSlot{}
+	for _, slot := range timeSlots {
+		slotDatetimeStr := date.Format(time.DateOnly) + " " + slot
+		slotTime, err := time.ParseInLocation(constant.DateTimeNoSecond, slotDatetimeStr, time.Local)
+		if err != nil {
+			return nil, err
+		}
+		isAvailable := true
+		for i := 0; i < len(bookedTimes); i += 2 {
+			if slotTime.Compare(bookedTimes[i]) >= 0 && slotTime.Compare(bookedTimes[i+1]) <= 0 {
+				isAvailable = false
+				break
+			}
+		}
+		statefulTimeSlots = append(statefulTimeSlots, models.StatefulTimeSlot{
+			TimeSlot:    slot,
+			IsAvailable: isAvailable,
+		})
+	}
+	return statefulTimeSlots, nil
 }

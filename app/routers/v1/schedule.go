@@ -40,7 +40,7 @@ func quickGenerate(routerGroup *gin.RouterGroup) {
 // @Tags v1, 排班相关
 // @Accept json
 // @Produce json
-// @Success 200 {string} Helloworld
+// @Success 200 {object} models.GetScheduleOut
 // @Router /schedule [get]
 // @Param param query models.GetScheduleIn true "获取排班参数"
 func getScheduleByUserAndDate(routerGroup *gin.RouterGroup) {
@@ -51,7 +51,11 @@ func getScheduleByUserAndDate(routerGroup *gin.RouterGroup) {
 			c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 			return
 		}
-		services.ScheduleService.GetScheduleByUserAndDate(gsi)
-		c.JSON(200, gin.H{})
+		gso, err := services.ScheduleService.GetScheduleByUserAndDate(gsi)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(200, gso)
 	})
 }

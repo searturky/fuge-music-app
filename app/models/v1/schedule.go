@@ -34,3 +34,16 @@ type GetScheduleIn struct {
 	UserID    int       `form:"u" binding:"required" example:"1" description:"服务者用户ID"`
 	Date      time.Time `form:"d" binding:"required" example:"2024-05-15" description:"日期2024-05-15" time_format:"2006-01-02"`
 }
+
+type StatefulTimeSlot struct {
+	TimeSlot    string `json:"time_slot" example:"09:00" description:"时间点"`
+	IsAvailable bool   `json:"is_available" example:"true" description:"是否可用"`
+}
+
+type GetScheduleOut struct {
+	// 返回"2024-05-15"格式的 time.Time 字符串
+	ScheduleID        int                `json:"schedule_id" example:"1" description:"排班ID"`
+	Date              string             `json:"date" example:"2024-05-15" description:"日期"`
+	TimePeriod        int                `json:"time_period" example:"60" description:"时间间隔"`
+	StatefulTimeSlots []StatefulTimeSlot `json:"stateful_time_slots" description:"时间点状态"`
+}

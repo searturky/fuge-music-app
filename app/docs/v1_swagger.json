@@ -75,6 +75,41 @@
                 }
             }
         },
+        "/booking": {
+            "post": {
+                "description": "创建预定",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "v1",
+                    "预定相关"
+                ],
+                "summary": "创建预定",
+                "parameters": [
+                    {
+                        "description": "预定日期",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models_v1.CreateBookingIn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/room/store/{storeId}": {
             "get": {
                 "description": "通过ID获取门店的房间列表",
@@ -141,22 +176,20 @@
                         "type": "integer",
                         "example": 1,
                         "name": "s",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "example": 1,
                         "name": "u",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models_v1.GetScheduleOut"
                         }
                     }
                 }
@@ -309,22 +342,52 @@
         "models_v1.CreateBookingIn": {
             "type": "object",
             "required": [
+                "booking_time",
+                "booking_time_period",
+                "booking_user_id",
                 "date",
-                "endDateTime",
-                "startDateTime"
+                "room_id",
+                "schedule_id",
+                "service_id",
+                "store_id",
+                "user_id"
             ],
             "properties": {
+                "booking_time": {
+                    "type": "string",
+                    "example": "09:00"
+                },
+                "booking_time_period": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "booking_user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "date": {
                     "type": "string",
-                    "format": "date"
+                    "example": "2024-05-15"
                 },
-                "endDateTime": {
-                    "type": "string",
-                    "format": "date-time"
+                "room_id": {
+                    "type": "integer",
+                    "example": 1
                 },
-                "startDateTime": {
-                    "type": "string",
-                    "format": "date-time"
+                "schedule_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "service_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "store_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -348,6 +411,30 @@
                     "type": "integer",
                     "format": "integer",
                     "minimum": 1,
+                    "example": 60
+                }
+            }
+        },
+        "models_v1.GetScheduleOut": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "example": "2024-05-15"
+                },
+                "schedule_id": {
+                    "description": "返回\"2024-05-15\"格式的 time.Time 字符串",
+                    "type": "integer",
+                    "example": 1
+                },
+                "stateful_time_slots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models_v1.StatefulTimeSlot"
+                    }
+                },
+                "time_period": {
+                    "type": "integer",
                     "example": 60
                 }
             }
@@ -398,6 +485,19 @@
                 "user_id": {
                     "type": "integer",
                     "example": 1
+                }
+            }
+        },
+        "models_v1.StatefulTimeSlot": {
+            "type": "object",
+            "properties": {
+                "is_available": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "time_slot": {
+                    "type": "string",
+                    "example": "09:00"
                 }
             }
         }
