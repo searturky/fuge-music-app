@@ -4,6 +4,7 @@ import (
 	"fuge/app/constant"
 	daos "fuge/app/dao/v1"
 	models "fuge/app/models/v1"
+	"fuge/app/utils"
 	"time"
 )
 
@@ -44,7 +45,10 @@ func (s *scheduleService) QuickGenerate(qgi *models.QuickGenerateIn) error {
 }
 
 func generateSchedule(qgi *models.QuickGenerateIn, shouldGenerateDays []string) error {
-	service := daos.ServiceDAO.DoGetServiceByID(qgi.ServiceID)
+	service, err := daos.ServiceDAO.DoGetServiceByID(qgi.ServiceID)
+	if err != nil {
+		return err
+	}
 	schedules := []*models.Schedule{}
 	for _, day := range shouldGenerateDays {
 		// 生成排班
@@ -116,48 +120,28 @@ func getScheduleTimeSlotsShowWithState(schedule *models.Schedule) ([]models.Stat
 	/*
 		返回当日含预约状态的排班时间段
 	*/
-	timeSlots := schedule.TimeSlots
-	// 获取当日已预约时间段
-	bookings, err := daos.BookingDAO.DoGetBookingsBySchedule(schedule)
+	statefulTimes, err := buildStateTimeSlots(schedule)
 	if err != nil {
 		return nil, err
 	}
-	bookedTimes := []time.Time{}
-	date := schedule.Date
-	for _, booking := range bookings {
-		startDatetimeStr := booking.Date.Format(time.DateOnly) + " " + booking.BookingTime
-		startTime, err := time.ParseInLocation(constant.DateTimeNoSecond, startDatetimeStr, time.Local)
-		if err != nil {
-			return nil, err
-		}
-		bookedTimes = append(bookedTimes, startTime)
-		endTime := startTime.Add(time.Duration(booking.BookingTimePeriod) * time.Minute)
-		bookedTimes = append(bookedTimes, endTime)
-	}
-	stateTimes, err := buildStateTimeSlots(timeSlots, bookedTimes, date)
-	if err != nil {
-		return nil, err
-	}
-	return stateTimes, nil
+	return statefulTimes, nil
 }
 
-func buildStateTimeSlots(timeSlots []string, bookedTimes []time.Time, date time.Time) ([]models.StatefulTimeSlot, error) {
+func buildStateTimeSlots(schedule *models.Schedule) ([]models.StatefulTimeSlot, error) {
 	/*
 		根据预约时间段，构建排班时间段的预约状态
 	*/
 	statefulTimeSlots := []models.StatefulTimeSlot{}
-	for _, slot := range timeSlots {
-		slotDatetimeStr := date.Format(time.DateOnly) + " " + slot
-		slotTime, err := time.ParseInLocation(constant.DateTimeNoSecond, slotDatetimeStr, time.Local)
+	// 获取该当日门店房间所有预约
+	roomBookingMap, err := getRoomBookingMap(schedule)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, slot := range schedule.TimeSlots {
+		isAvailable, err := slotIsAvailable(slot, schedule, roomBookingMap)
 		if err != nil {
 			return nil, err
-		}
-		isAvailable := true
-		for i := 0; i < len(bookedTimes); i += 2 {
-			if slotTime.Compare(bookedTimes[i]) >= 0 && slotTime.Compare(bookedTimes[i+1]) <= 0 {
-				isAvailable = false
-				break
-			}
 		}
 		statefulTimeSlots = append(statefulTimeSlots, models.StatefulTimeSlot{
 			TimeSlot:    slot,
@@ -165,4 +149,125 @@ func buildStateTimeSlots(timeSlots []string, bookedTimes []time.Time, date time.
 		})
 	}
 	return statefulTimeSlots, nil
+}
+
+func slotIsAvailable(slot string, schedule *models.Schedule, args ...any) (bool, error) {
+	// 获取服务者当日已预约时间段
+	serverBookings, err := daos.BookingDAO.DoGetBookingsByUserIDAndDate(schedule.UserID, schedule.Date)
+	if err != nil {
+		return false, err
+	}
+	// 构造服务者的已预约时间区间
+	serverBookedTimes := []time.Time{}
+	date := schedule.Date
+	for _, booking := range serverBookings {
+		startDatetimeStr := booking.Date.Format(time.DateOnly) + " " + booking.BookingTime
+		startTime, _ := time.ParseInLocation(constant.DateTimeNoSecond, startDatetimeStr, time.Local)
+		serverBookedTimes = append(serverBookedTimes, startTime)
+		endTime := startTime.Add(time.Duration(booking.BookingTimePeriod) * time.Minute)
+		serverBookedTimes = append(serverBookedTimes, endTime)
+	}
+	slotDatetimeStr := date.Format(time.DateOnly) + " " + slot
+	slotTime, err := time.ParseInLocation(constant.DateTimeNoSecond, slotDatetimeStr, time.Local)
+	if err != nil {
+		return false, err
+	}
+	// 获取该当日门店房间所有预约
+	var roomBookingMap map[int]*utils.BitMap
+	isBitMapInArgs := false
+	if len(args) > 0 {
+		if value, ok := args[0].(map[int]*utils.BitMap); ok {
+			roomBookingMap = value
+			isBitMapInArgs = true
+		}
+	}
+	if !isBitMapInArgs {
+		roomBookingMap, err = getRoomBookingMap(schedule)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	// 计算服务者的可用时间
+	for i := 0; i < len(serverBookedTimes); i += 2 {
+		// 该服务者该时间段已经没有时间
+		if slotTime.Compare(serverBookedTimes[i]) >= 0 && slotTime.Compare(serverBookedTimes[i+1]) <= 0 {
+			return false, nil
+		}
+	}
+	// 计算可用房间
+	availableRooms, err := getSlotAvailableRooms(slot, schedule, roomBookingMap)
+	if err != nil || len(availableRooms) == 0 {
+		return false, err
+	}
+	return true, nil
+}
+
+func getRoomBookingMap(schedule *models.Schedule) (map[int]*utils.BitMap, error) {
+	service, err := daos.ServiceDAO.DoGetServiceByID(schedule.ServiceID)
+	if err != nil {
+		return nil, err
+	}
+	RoomIDs := []int{}
+	for _, room := range service.Rooms {
+		RoomIDs = append(RoomIDs, room.ID)
+	}
+	allStoreBooking, err := daos.BookingDAO.DoGetAllBookings(service.StoreID, schedule.Date, RoomIDs)
+	if err != nil {
+		return nil, err
+	}
+	// 构造房间预约时间段Map位图
+	roomMap := make(map[int]*utils.BitMap)
+	for _, booking := range allStoreBooking {
+		if _, ok := roomMap[booking.RoomID]; !ok {
+			roomMap[booking.RoomID] = utils.NewBitMap()
+		}
+		startMinute, err := utils.GetMinuteFromTimeStr(booking.BookingTime)
+		if err != nil {
+			return nil, err
+		}
+		endMinute := startMinute + booking.BookingTimePeriod
+		for i := startMinute; i <= endMinute; i++ {
+			roomMap[booking.RoomID].Set(uint(i))
+		}
+	}
+	return roomMap, nil
+}
+
+func getSlotAvailableRooms(slot string, schedule *models.Schedule, args ...any) ([]int, error) {
+	var roomBookingMap map[int]*utils.BitMap
+	isBitMapInArgs := false
+	var err error
+	if len(args) > 0 {
+		if value, ok := args[0].(map[int]*utils.BitMap); ok {
+			roomBookingMap = value
+			isBitMapInArgs = true
+		}
+	}
+	if !isBitMapInArgs {
+		roomBookingMap, err = getRoomBookingMap(schedule)
+		if err != nil {
+			return nil, err
+		}
+	}
+	availableRooms := []int{}
+	slotStartMinute, err := utils.GetMinuteFromTimeStr(slot)
+	if err != nil {
+		return nil, err
+	}
+	slotEndMinute := slotStartMinute + schedule.TimePeriod
+	for roomID, bitmap := range roomBookingMap {
+		isAvailable := true
+		for i := slotStartMinute; i <= slotEndMinute; i++ {
+			if bitmap.Check(uint(i)) {
+				isAvailable = false
+				break
+			}
+		}
+		if isAvailable {
+			availableRooms = append(availableRooms, roomID)
+		}
+	}
+
+	return availableRooms, nil
 }
